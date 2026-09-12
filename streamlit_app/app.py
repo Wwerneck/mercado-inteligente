@@ -1,14 +1,17 @@
+import subprocess
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import duckdb
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
 from streamlit_app.components.kpis import render_kpi_grid
 from streamlit_app.data import (
+    ensure_data_artifacts,
     load_advanced_ml_metadata,
     load_category_metrics,
     load_marketplace_overview,
@@ -41,6 +44,7 @@ st.set_page_config(
 
 @st.cache_data(show_spinner=False)
 def cached_data():
+    ensure_data_artifacts()
     return {
         "categories": load_category_metrics(),
         "overview": load_marketplace_overview(),
@@ -52,7 +56,18 @@ def cached_data():
 
 
 def main() -> None:
-    data = cached_data()
+    try:
+        with st.spinner("Preparando dados do dashboard..."):
+            data = cached_data()
+    except (RuntimeError, OSError, ValueError, KeyError, duckdb.Error, subprocess.CalledProcessError) as exc:
+        st.error("Nao foi possivel preparar os dados do dashboard.")
+        st.info(
+            "No Streamlit Cloud, aguarde alguns instantes e reinicie o app. "
+            "Se persistir, verifique os logs do bootstrap na tela Manage app."
+        )
+        st.exception(exc)
+        return
+
     categories = data["categories"]
     overview = data["overview"]
     ml_scores = data["ml_scores"]
