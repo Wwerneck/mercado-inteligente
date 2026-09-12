@@ -29,9 +29,14 @@ EXECUTIVE_COLORS = {
     "grid": "#e5e7eb",
 }
 COVERAGE_COLORS = {
-    "high_coverage": "#1f4e79",
-    "medium_coverage": "#2a9d8f",
-    "low_coverage": "#c1121f",
+    "Alta cobertura": "#1f4e79",
+    "Media cobertura": "#2a9d8f",
+    "Baixa cobertura": "#c1121f",
+}
+COVERAGE_LABELS = {
+    "high_coverage": "Alta cobertura",
+    "medium_coverage": "Media cobertura",
+    "low_coverage": "Baixa cobertura",
 }
 ANOMALY_COLORS = {False: "#1f4e79", True: "#c1121f"}
 
@@ -188,17 +193,21 @@ def render_overview(
 
 
 def render_categories(categories: pd.DataFrame) -> None:
-    coverage_filter = st.multiselect(
-        "Coverage band",
-        sorted(categories["coverage_band"].dropna().unique()),
-        default=sorted(categories["coverage_band"].dropna().unique()),
+    categories = categories.copy()
+    categories["coverage_label"] = categories["coverage_band"].map(COVERAGE_LABELS).fillna(
+        categories["coverage_band"]
     )
-    filtered = categories[categories["coverage_band"].isin(coverage_filter)]
+    coverage_filter = st.multiselect(
+        "Cobertura",
+        sorted(categories["coverage_label"].dropna().unique()),
+        default=sorted(categories["coverage_label"].dropna().unique()),
+    )
+    filtered = categories[categories["coverage_label"].isin(coverage_filter)]
 
     col_left, col_right = st.columns([1.2, 1])
     with col_left:
         st.subheader("Top categorias por itens")
-        top_categories = filtered.nlargest(15, "total_items_in_this_category").sort_values(
+        top_categories = filtered.nlargest(12, "total_items_in_this_category").sort_values(
             "total_items_in_this_category"
         )
         fig = px.bar(
@@ -206,20 +215,28 @@ def render_categories(categories: pd.DataFrame) -> None:
             x="total_items_in_this_category",
             y="category_name",
             orientation="h",
-            color="coverage_band",
+            color="coverage_label",
             text=top_categories["total_items_in_this_category"].map(format_compact),
             color_discrete_map=COVERAGE_COLORS,
+            labels={
+                "total_items_in_this_category": "Itens",
+                "category_name": "Categoria",
+                "coverage_label": "Cobertura",
+            },
             hover_data={
                 "category_name": False,
                 "category_id": True,
                 "domain_count": True,
                 "catalog_coverage_score": ":.2f",
                 "total_items_in_this_category": ":,",
+                "coverage_label": False,
             },
         )
-        fig.update_traces(textposition="outside", cliponaxis=False)
-        apply_chart_layout(fig, height=520, x_title="Itens", y_title="")
+        fig.update_traces(textposition="outside", cliponaxis=False, marker_line_width=0)
+        apply_chart_layout(fig, height=500, x_title="Itens mapeados", y_title="")
         fig.update_layout(legend_title_text="Cobertura")
+        fig.update_xaxes(tickformat="~s", showline=True, linecolor=EXECUTIVE_COLORS["grid"])
+        fig.update_yaxes(categoryorder="total ascending")
         st.plotly_chart(fig, use_container_width=True)
 
     with col_right:
@@ -229,17 +246,17 @@ def render_categories(categories: pd.DataFrame) -> None:
             x="category_depth",
             y="catalog_coverage_score",
             size="total_items_in_this_category",
-            color="coverage_band",
+            color="coverage_label",
             color_discrete_map=COVERAGE_COLORS,
             hover_name="category_name",
             hover_data={
                 "category_id": True,
                 "domain_count": True,
                 "total_items_in_this_category": ":,",
-                "coverage_band": False,
+                "coverage_label": False,
             },
         )
-        apply_chart_layout(fig, height=520, x_title="Profundidade", y_title="Coverage score")
+        apply_chart_layout(fig, height=500, x_title="Profundidade", y_title="Score de cobertura")
         fig.update_layout(legend_title_text="Cobertura")
         st.plotly_chart(fig, use_container_width=True)
 
@@ -251,7 +268,7 @@ def render_categories(categories: pd.DataFrame) -> None:
                 "domain_count",
                 "total_items_in_this_category",
                 "catalog_coverage_score",
-                "coverage_band",
+                "coverage_label",
             ]
         ],
         use_container_width=True,
