@@ -26,15 +26,10 @@ jobs:
 
       - name: Bootstrap local data artifacts
         run: |
-          python -m src.ingestion.run_batch_collection
-          python -m src.processing.run_phase_2
-          python -m src.database.run_phase_3
+          python -m src.orchestration.run_phase_4
           cd dbt
           dbt run --profiles-dir .
           dbt test --profiles-dir .
-          cd ..
-          python -m src.ml.run_phase_6
-          python -m src.ml.run_phase_7
 
       - name: Tests
         run: pytest
