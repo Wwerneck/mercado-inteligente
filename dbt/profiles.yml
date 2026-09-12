@@ -1,0 +1,8 @@
+mercado_intelligence:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/warehouse/mercado_intelligence.duckdb
+      threads: 1
+

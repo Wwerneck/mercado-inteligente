@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Bootstrap local data artifacts
+        run: |
+          python -m src.ingestion.run_batch_collection
+          python -m src.processing.run_phase_2
+          python -m src.database.run_phase_3
+          cd dbt
+          dbt run --profiles-dir .
+          dbt test --profiles-dir .
+          cd ..
+          python -m src.ml.run_phase_6
+          python -m src.ml.run_phase_7
+
+      - name: Tests
+        run: pytest
+
+      - name: dbt parse
+        working-directory: dbt
+        run: dbt parse --profiles-dir .

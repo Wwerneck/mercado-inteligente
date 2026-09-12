@@ -1,0 +1,97 @@
+version: 2
+
+sources:
+  - name: analytics
+    schema: analytics
+    description: "Tabelas dimensionais carregadas pela Fase 3 no DuckDB."
+    tables:
+      - name: dim_category
+        description: "Uma linha por categoria monitorada."
+        columns:
+          - name: category_id
+            tests:
+              - not_null
+              - unique
+          - name: category_name
+            tests:
+              - not_null
+      - name: dim_domain
+        description: "Uma linha por dominio retornado pela descoberta do Mercado Livre."
+        columns:
+          - name: domain_category_id
+            tests:
+              - not_null
+              - unique
+          - name: domain_id
+            tests:
+              - not_null
+          - name: category_id
+            tests:
+              - not_null
+      - name: dim_date
+        description: "Calendario dos snapshots."
+        columns:
+          - name: date_key
+            tests:
+              - not_null
+              - unique
+      - name: dim_seller
+        description: "Uma linha por seller autenticado monitorado."
+        columns:
+          - name: seller_id
+            tests:
+              - unique
+      - name: dim_item
+        description: "Uma linha por anuncio autenticado monitorado."
+        columns:
+          - name: item_id
+            tests:
+              - not_null
+              - unique
+          - name: seller_id
+            tests:
+              - relationships:
+                  arguments:
+                    to: source('analytics', 'dim_seller')
+                    field: seller_id
+      - name: fact_category_snapshot
+        description: "Metricas por categoria e data de snapshot."
+        columns:
+          - name: category_id
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('analytics', 'dim_category')
+                    field: category_id
+          - name: snapshot_date_key
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('analytics', 'dim_date')
+                    field: date_key
+      - name: fact_marketplace_overview
+        description: "Metricas agregadas por data de snapshot."
+        columns:
+          - name: snapshot_date_key
+            tests:
+              - not_null
+              - unique
+      - name: fact_seller_item_snapshot
+        description: "Snapshot de preco, status e quantidades dos anuncios autenticados."
+        columns:
+          - name: item_id
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('analytics', 'dim_item')
+                    field: item_id
+          - name: snapshot_date_key
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('analytics', 'dim_date')
+                    field: date_key

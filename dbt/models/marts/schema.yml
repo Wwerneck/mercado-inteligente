@@ -1,0 +1,94 @@
+version: 2
+
+models:
+  - name: mart_category_metrics
+    description: "Mart analitico com metricas por categoria e data de snapshot."
+    columns:
+      - name: category_id
+        description: "Identificador da categoria no Mercado Livre."
+        tests:
+          - not_null
+      - name: snapshot_date_key
+        description: "Chave da data do snapshot."
+        tests:
+          - not_null
+      - name: coverage_band
+        description: "Faixa derivada do score de cobertura."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['high_coverage', 'medium_coverage', 'low_coverage']
+      - name: catalog_coverage_score
+        description: "Score 0-100 relativo ao maior volume de itens entre categorias monitoradas."
+        tests:
+          - not_null
+
+  - name: mart_marketplace_overview
+    description: "Mart agregado com KPIs do marketplace monitorado por data."
+    columns:
+      - name: snapshot_date_key
+        tests:
+          - not_null
+          - unique
+      - name: total_categories
+        tests:
+          - not_null
+      - name: total_domains
+        tests:
+          - not_null
+
+  - name: mart_seller_item_metrics
+    description: "Mart agregado com metricas dos anuncios do seller autenticado por categoria e status."
+    columns:
+      - name: seller_id
+        description: "Identificador do seller autenticado."
+      - name: category_id
+        description: "Categoria dos anuncios agregados."
+      - name: status
+        description: "Status dos anuncios agregados."
+        tests:
+          - not_null
+      - name: item_count
+        description: "Quantidade de anuncios distintos."
+        tests:
+          - not_null
+      - name: active_item_count
+        description: "Quantidade de anuncios ativos."
+        tests:
+          - not_null
+      - name: total_available_quantity
+        description: "Soma do estoque disponivel."
+        tests:
+          - not_null
+      - name: total_sold_quantity
+        description: "Soma da quantidade vendida."
+        tests:
+          - not_null
+      - name: sell_through_rate
+        description: "Percentual vendido sobre vendido + estoque disponivel."
+        tests:
+          - not_null
+      - name: paused_item_count
+        description: "Quantidade de anuncios pausados."
+        tests:
+          - not_null
+      - name: zero_sales_stock_count
+        description: "Quantidade de anuncios com estoque e sem venda registrada."
+        tests:
+          - not_null
+
+  - name: mart_seller_items
+    description: "Mart detalhado com uma linha por anuncio autenticado por snapshot."
+    columns:
+      - name: item_id
+        description: "Identificador do anuncio."
+        tests:
+          - not_null
+      - name: status
+        description: "Status do anuncio no snapshot."
+        tests:
+          - not_null
+      - name: snapshot_date_key
+        description: "Chave da data do snapshot."
+        tests:
+          - not_null
