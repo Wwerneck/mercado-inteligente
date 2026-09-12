@@ -21,24 +21,28 @@ from streamlit_app.data import (
 )
 
 EXECUTIVE_COLORS = {
-    "primary": "#1f4e79",
-    "secondary": "#2a9d8f",
-    "accent": "#f4a261",
-    "risk": "#c1121f",
-    "muted": "#6b7280",
-    "grid": "#e5e7eb",
+    "background": "#070b12",
+    "surface": "#0f1724",
+    "surface_alt": "#131d2b",
+    "primary": "#7dd3fc",
+    "secondary": "#34d399",
+    "accent": "#fbbf24",
+    "risk": "#fb7185",
+    "muted": "#94a3b8",
+    "text": "#e5edf6",
+    "grid": "#263244",
 }
 COVERAGE_COLORS = {
-    "Alta cobertura": "#1f4e79",
-    "Media cobertura": "#2a9d8f",
-    "Baixa cobertura": "#c1121f",
+    "Alta cobertura": "#7dd3fc",
+    "Media cobertura": "#34d399",
+    "Baixa cobertura": "#fb7185",
 }
 COVERAGE_LABELS = {
     "high_coverage": "Alta cobertura",
     "medium_coverage": "Media cobertura",
     "low_coverage": "Baixa cobertura",
 }
-ANOMALY_COLORS = {False: "#1f4e79", True: "#c1121f"}
+ANOMALY_COLORS = {False: "#7dd3fc", True: "#fb7185"}
 
 st.set_page_config(
     page_title="Mercado Intelligence AI",
@@ -61,6 +65,7 @@ def cached_data():
 
 
 def main() -> None:
+    apply_executive_theme()
     try:
         with st.spinner("Preparando dados do dashboard..."):
             data = cached_data()
@@ -77,8 +82,8 @@ def main() -> None:
     overview = data["overview"]
     ml_scores = data["ml_scores"]
 
-    apply_executive_theme()
     st.title("Mercado Intelligence AI")
+    st.caption("Dashboard executivo de inteligencia de mercado com dados publicos do Mercado Livre")
 
     tabs = st.tabs(
         [
@@ -106,22 +111,92 @@ def apply_executive_theme() -> None:
     st.markdown(
         """
         <style>
-        .block-container {padding-top: 1.4rem;}
+        :root {
+            --mi-bg: #070b12;
+            --mi-surface: #0f1724;
+            --mi-surface-alt: #131d2b;
+            --mi-border: #253244;
+            --mi-text: #e5edf6;
+            --mi-muted: #94a3b8;
+            --mi-accent: #7dd3fc;
+        }
+        .stApp {
+            background:
+                radial-gradient(circle at top left, rgba(125, 211, 252, 0.10), transparent 34rem),
+                linear-gradient(180deg, #070b12 0%, #0a0f18 42%, #070b12 100%);
+            color: var(--mi-text);
+        }
+        .block-container {
+            padding-top: 1.2rem;
+            padding-bottom: 2rem;
+            max-width: 1320px;
+        }
+        h1 {
+            color: #f8fafc;
+            font-size: 2rem !important;
+            font-weight: 720 !important;
+            letter-spacing: 0 !important;
+            margin-bottom: 0.15rem !important;
+        }
+        h2, h3 {
+            color: #e5edf6;
+            letter-spacing: 0 !important;
+        }
+        p, label, span {
+            color: inherit;
+        }
+        div[data-testid="stCaptionContainer"] {
+            color: var(--mi-muted);
+            margin-bottom: 1rem;
+        }
+        div[data-testid="stTabs"] button {
+            color: #cbd5e1;
+            background: transparent;
+            border-radius: 0;
+        }
+        div[data-testid="stTabs"] button[aria-selected="true"] {
+            color: #f8fafc;
+            border-bottom-color: var(--mi-accent);
+        }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+            gap: 1.1rem;
+            border-bottom: 1px solid var(--mi-border);
+        }
+        section[data-testid="stSidebar"] {
+            background: #080d15;
+        }
         div[data-testid="stMetric"] {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
+            background: linear-gradient(180deg, rgba(19, 29, 43, 0.95), rgba(15, 23, 36, 0.95));
+            border: 1px solid var(--mi-border);
             border-radius: 8px;
-            padding: 14px 16px;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+            padding: 16px 18px;
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
         }
         div[data-testid="stMetricLabel"] p {
-            color: #475569;
+            color: var(--mi-muted);
             font-size: 0.86rem;
+            font-weight: 520;
         }
         div[data-testid="stMetricValue"] {
-            color: #111827;
-            font-size: 1.85rem;
+            color: #f8fafc;
+            font-size: 1.8rem;
             font-weight: 650;
+        }
+        div[data-testid="stDataFrame"] {
+            border: 1px solid var(--mi-border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--mi-surface);
+        }
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="popover"] {
+            background-color: var(--mi-surface-alt);
+            color: var(--mi-text);
+            border-color: var(--mi-border);
+        }
+        .stAlert {
+            background: var(--mi-surface-alt);
+            border-color: var(--mi-border);
         }
         </style>
         """,
@@ -157,7 +232,7 @@ def render_overview(
             orientation="h",
             text=query_frame["total_items_in_categories"].map(format_compact),
             color="domain_count",
-            color_continuous_scale=["#dbeafe", EXECUTIVE_COLORS["primary"]],
+            color_continuous_scale=["#1e293b", EXECUTIVE_COLORS["primary"]],
             hover_data={
                 "search_query": False,
                 "total_items_in_categories": ":,",
@@ -354,15 +429,30 @@ def apply_chart_layout(fig, height: int, x_title: str, y_title: str) -> None:
     fig.update_layout(
         height=height,
         margin={"l": 10, "r": 28, "t": 12, "b": 36},
-        plot_bgcolor="#ffffff",
-        paper_bgcolor="#ffffff",
-        font={"family": "Arial", "size": 13, "color": "#334155"},
+        plot_bgcolor=EXECUTIVE_COLORS["background"],
+        paper_bgcolor=EXECUTIVE_COLORS["background"],
+        font={"family": "Arial", "size": 13, "color": EXECUTIVE_COLORS["text"]},
         xaxis_title=x_title,
         yaxis_title=y_title,
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1},
+        hoverlabel={
+            "bgcolor": EXECUTIVE_COLORS["surface_alt"],
+            "bordercolor": EXECUTIVE_COLORS["grid"],
+            "font_color": EXECUTIVE_COLORS["text"],
+        },
     )
-    fig.update_xaxes(gridcolor=EXECUTIVE_COLORS["grid"], zeroline=False)
-    fig.update_yaxes(gridcolor=EXECUTIVE_COLORS["grid"], zeroline=False)
+    fig.update_xaxes(
+        gridcolor=EXECUTIVE_COLORS["grid"],
+        zeroline=False,
+        color=EXECUTIVE_COLORS["muted"],
+        title_font_color=EXECUTIVE_COLORS["muted"],
+    )
+    fig.update_yaxes(
+        gridcolor=EXECUTIVE_COLORS["grid"],
+        zeroline=False,
+        color=EXECUTIVE_COLORS["muted"],
+        title_font_color=EXECUTIVE_COLORS["muted"],
+    )
 
 
 def format_pt_int(value: float) -> str:
