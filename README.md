@@ -2,6 +2,11 @@
 
 Plataforma de Engenharia de Dados, Machine Learning e IA para inteligencia de marketplace com dados publicos do Mercado Livre. O fluxo principal nao exige conta vendedora.
 
+## Links
+
+- Dashboard Streamlit Cloud: https://mercado-inteligente.streamlit.app/
+- Repositorio GitHub: https://github.com/Wwerneck/mercado-inteligente
+
 ## Problema de negocio
 
 Marketplace operators precisam acompanhar categorias, concorrencia, cobertura de catalogo, oportunidades e anomalias de forma rastreavel. Este projeto demonstra uma arquitetura completa para coletar, transformar, modelar, disponibilizar e explicar dados do Mercado Livre sem inventar informacoes.
@@ -42,7 +47,8 @@ Python, Pandas, NumPy, PyArrow, DuckDB, PostgreSQL, Airflow, dbt, FastAPI, Strea
 - assistente analitico controlado;
 - observabilidade de pipeline;
 - Docker Compose;
-- CI com lint, testes e dbt parse.
+- CI com lint, testes e dbt parse;
+- deploy publico no Streamlit Cloud.
 
 ## Como executar
 
@@ -110,5 +116,5 @@ Clustering ja e executado com a base ampliada. Forecasting permanece condicionad
 - ampliar dashboards publicos por termos, categorias, dominios e tendencias;
 - coleta autenticada opcional de reputacao, visitas e anuncios quando houver conta vendedora;
 - forecasting temporal;
-- deploy em cloud;
+- evoluir o deploy em cloud com cache persistente e observabilidade;
 - observabilidade com metricas externas.
