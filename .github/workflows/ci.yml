@@ -26,10 +26,16 @@ jobs:
 
       - name: Bootstrap local data artifacts
         run: |
-          python -m src.orchestration.run_phase_4
+          python -m src.ingestion.run_batch_collection
+          python -m src.processing.run_phase_2
+          python -m src.database.run_phase_3
           cd dbt
           dbt run --profiles-dir .
           dbt test --profiles-dir .
+          cd ..
+          python -m src.ml.run_phase_6
+          python -m src.ml.run_phase_7
+          python -c "from datetime import UTC, datetime; from src.config.settings import get_settings; from src.orchestration.pipeline_tasks import write_manifest, write_observability_summary; settings = get_settings(); now = datetime.now(UTC).isoformat(); manifest = {'run_id': 'ci-bootstrap', 'status': 'success', 'started_at': now, 'finished_at': now, 'duration_seconds': 0, 'query': None, 'queries': settings.public_queries, 'tasks': {'ci_bootstrap': {'status': 'success', 'outputs': []}}}; write_manifest(settings.data_dir, manifest['run_id'], manifest); write_observability_summary(settings.data_dir, manifest)"
 
       - name: Tests
         run: pytest
