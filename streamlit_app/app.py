@@ -21,28 +21,28 @@ from streamlit_app.data import (
 )
 
 EXECUTIVE_COLORS = {
-    "background": "#070b12",
-    "surface": "#0f1724",
-    "surface_alt": "#131d2b",
-    "primary": "#7dd3fc",
-    "secondary": "#34d399",
-    "accent": "#fbbf24",
-    "risk": "#fb7185",
-    "muted": "#94a3b8",
-    "text": "#e5edf6",
-    "grid": "#263244",
+    "background": "#0b111a",
+    "surface": "#111827",
+    "surface_alt": "#162235",
+    "primary": "#8fb8d8",
+    "secondary": "#7cc7a8",
+    "accent": "#d6b25e",
+    "risk": "#d97a84",
+    "muted": "#a8b3c4",
+    "text": "#eef3f8",
+    "grid": "#2c394b",
 }
 COVERAGE_COLORS = {
-    "Alta cobertura": "#7dd3fc",
-    "Media cobertura": "#34d399",
-    "Baixa cobertura": "#fb7185",
+    "Alta cobertura": "#8fb8d8",
+    "Media cobertura": "#7cc7a8",
+    "Baixa cobertura": "#d97a84",
 }
 COVERAGE_LABELS = {
     "high_coverage": "Alta cobertura",
     "medium_coverage": "Media cobertura",
     "low_coverage": "Baixa cobertura",
 }
-ANOMALY_COLORS = {False: "#7dd3fc", True: "#fb7185"}
+ANOMALY_COLORS = {False: "#8fb8d8", True: "#d97a84"}
 
 st.set_page_config(
     page_title="Mercado Intelligence AI",
@@ -112,18 +112,20 @@ def apply_executive_theme() -> None:
         """
         <style>
         :root {
-            --mi-bg: #070b12;
-            --mi-surface: #0f1724;
-            --mi-surface-alt: #131d2b;
-            --mi-border: #253244;
-            --mi-text: #e5edf6;
-            --mi-muted: #94a3b8;
-            --mi-accent: #7dd3fc;
+            --mi-bg: #0b111a;
+            --mi-surface: #111827;
+            --mi-surface-alt: #162235;
+            --mi-border: #2c394b;
+            --mi-text: #eef3f8;
+            --mi-muted: #a8b3c4;
+            --mi-accent: #d6b25e;
+            --mi-accent-blue: #8fb8d8;
         }
         .stApp {
             background:
-                radial-gradient(circle at top left, rgba(125, 211, 252, 0.10), transparent 34rem),
-                linear-gradient(180deg, #070b12 0%, #0a0f18 42%, #070b12 100%);
+                radial-gradient(circle at 8% 0%, rgba(143, 184, 216, 0.10), transparent 32rem),
+                radial-gradient(circle at 92% 4%, rgba(214, 178, 94, 0.08), transparent 28rem),
+                linear-gradient(180deg, #0b111a 0%, #0d1520 48%, #0b111a 100%);
             color: var(--mi-text);
         }
         .block-container {
@@ -132,15 +134,20 @@ def apply_executive_theme() -> None:
             max-width: 1320px;
         }
         h1 {
-            color: #f8fafc;
+            color: var(--mi-text);
             font-size: 2rem !important;
             font-weight: 720 !important;
             letter-spacing: 0 !important;
             margin-bottom: 0.15rem !important;
         }
         h2, h3 {
-            color: #e5edf6;
+            color: var(--mi-text);
             letter-spacing: 0 !important;
+        }
+        h3 {
+            font-size: 1.28rem !important;
+            font-weight: 680 !important;
+            margin-top: 1.4rem !important;
         }
         p, label, span {
             color: inherit;
@@ -150,12 +157,13 @@ def apply_executive_theme() -> None:
             margin-bottom: 1rem;
         }
         div[data-testid="stTabs"] button {
-            color: #cbd5e1;
+            color: #d8e0ea;
             background: transparent;
             border-radius: 0;
+            font-weight: 520;
         }
         div[data-testid="stTabs"] button[aria-selected="true"] {
-            color: #f8fafc;
+            color: #ffffff;
             border-bottom-color: var(--mi-accent);
         }
         div[data-testid="stTabs"] [data-baseweb="tab-list"] {
@@ -166,11 +174,11 @@ def apply_executive_theme() -> None:
             background: #080d15;
         }
         div[data-testid="stMetric"] {
-            background: linear-gradient(180deg, rgba(19, 29, 43, 0.95), rgba(15, 23, 36, 0.95));
+            background: linear-gradient(180deg, rgba(22, 34, 53, 0.98), rgba(17, 24, 39, 0.98));
             border: 1px solid var(--mi-border);
             border-radius: 8px;
             padding: 16px 18px;
-            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
         }
         div[data-testid="stMetricLabel"] p {
             color: var(--mi-muted);
@@ -178,7 +186,7 @@ def apply_executive_theme() -> None:
             font-weight: 520;
         }
         div[data-testid="stMetricValue"] {
-            color: #f8fafc;
+            color: #ffffff;
             font-size: 1.8rem;
             font-weight: 650;
         }
@@ -188,11 +196,30 @@ def apply_executive_theme() -> None:
             overflow: hidden;
             background: var(--mi-surface);
         }
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="popover"] {
-            background-color: var(--mi-surface-alt);
-            color: var(--mi-text);
-            border-color: var(--mi-border);
+        div[data-baseweb="select"] > div {
+            background-color: #eef3f8;
+            border: 1px solid #cad5e2;
+            border-radius: 8px;
+            color: #172033;
+            min-height: 48px;
+        }
+        div[data-baseweb="select"] span {
+            color: #172033 !important;
+            font-weight: 520;
+        }
+        span[data-baseweb="tag"] {
+            background-color: #253247 !important;
+            border: 1px solid #40516a !important;
+            color: #f8fafc !important;
+            border-radius: 6px !important;
+        }
+        span[data-baseweb="tag"] span {
+            color: #f8fafc !important;
+        }
+        div[data-baseweb="popover"] ul,
+        div[data-baseweb="menu"] {
+            background-color: #ffffff;
+            color: #172033;
         }
         .stAlert {
             background: var(--mi-surface-alt);
@@ -232,7 +259,7 @@ def render_overview(
             orientation="h",
             text=query_frame["total_items_in_categories"].map(format_compact),
             color="domain_count",
-            color_continuous_scale=["#1e293b", EXECUTIVE_COLORS["primary"]],
+            color_continuous_scale=["#263247", EXECUTIVE_COLORS["primary"]],
             hover_data={
                 "search_query": False,
                 "total_items_in_categories": ":,",
@@ -241,7 +268,7 @@ def render_overview(
                 "avg_catalog_coverage_score": ":.2f",
             },
         )
-        fig.update_traces(textposition="outside", cliponaxis=False)
+        fig.update_traces(textposition="outside", cliponaxis=False, marker_line_width=0)
         apply_chart_layout(fig, height=390, x_title="Itens mapeados", y_title="")
         fig.update_layout(coloraxis_showscale=False)
         st.plotly_chart(fig, use_container_width=True)
@@ -307,7 +334,12 @@ def render_categories(categories: pd.DataFrame) -> None:
                 "coverage_label": False,
             },
         )
-        fig.update_traces(textposition="outside", cliponaxis=False, marker_line_width=0)
+        fig.update_traces(
+            textposition="outside",
+            cliponaxis=False,
+            marker_line_width=0,
+            textfont={"color": EXECUTIVE_COLORS["text"], "size": 12},
+        )
         apply_chart_layout(fig, height=500, x_title="Itens mapeados", y_title="")
         fig.update_layout(legend_title_text="Cobertura")
         fig.update_xaxes(tickformat="~s", showline=True, linecolor=EXECUTIVE_COLORS["grid"])
@@ -333,6 +365,7 @@ def render_categories(categories: pd.DataFrame) -> None:
         )
         apply_chart_layout(fig, height=500, x_title="Profundidade", y_title="Score de cobertura")
         fig.update_layout(legend_title_text="Cobertura")
+        fig.update_traces(marker={"opacity": 0.92, "line": {"width": 1, "color": "#0b111a"}})
         st.plotly_chart(fig, use_container_width=True)
 
     st.dataframe(
@@ -376,7 +409,7 @@ def render_opportunities(ml_scores: pd.DataFrame) -> None:
             "anomaly_type": True,
         },
     )
-    fig.update_traces(textposition="outside", cliponaxis=False)
+    fig.update_traces(textposition="outside", cliponaxis=False, marker_line_width=0)
     apply_chart_layout(fig, height=520, x_title="Opportunity Score", y_title="")
     fig.update_layout(legend_title_text="Anomalia")
     st.plotly_chart(fig, use_container_width=True)
@@ -429,12 +462,20 @@ def apply_chart_layout(fig, height: int, x_title: str, y_title: str) -> None:
     fig.update_layout(
         height=height,
         margin={"l": 10, "r": 28, "t": 12, "b": 36},
-        plot_bgcolor=EXECUTIVE_COLORS["background"],
-        paper_bgcolor=EXECUTIVE_COLORS["background"],
+        plot_bgcolor=EXECUTIVE_COLORS["surface"],
+        paper_bgcolor=EXECUTIVE_COLORS["surface"],
         font={"family": "Arial", "size": 13, "color": EXECUTIVE_COLORS["text"]},
         xaxis_title=x_title,
         yaxis_title=y_title,
-        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1},
+        legend={
+            "orientation": "h",
+            "yanchor": "bottom",
+            "y": 1.02,
+            "xanchor": "right",
+            "x": 1,
+            "font": {"color": EXECUTIVE_COLORS["text"], "size": 12},
+            "title": {"font": {"color": EXECUTIVE_COLORS["muted"]}},
+        },
         hoverlabel={
             "bgcolor": EXECUTIVE_COLORS["surface_alt"],
             "bordercolor": EXECUTIVE_COLORS["grid"],
@@ -444,14 +485,18 @@ def apply_chart_layout(fig, height: int, x_title: str, y_title: str) -> None:
     fig.update_xaxes(
         gridcolor=EXECUTIVE_COLORS["grid"],
         zeroline=False,
-        color=EXECUTIVE_COLORS["muted"],
-        title_font_color=EXECUTIVE_COLORS["muted"],
+        color=EXECUTIVE_COLORS["text"],
+        title_font_color=EXECUTIVE_COLORS["primary"],
+        tickfont={"color": EXECUTIVE_COLORS["muted"]},
+        linecolor=EXECUTIVE_COLORS["grid"],
     )
     fig.update_yaxes(
         gridcolor=EXECUTIVE_COLORS["grid"],
         zeroline=False,
-        color=EXECUTIVE_COLORS["muted"],
-        title_font_color=EXECUTIVE_COLORS["muted"],
+        color=EXECUTIVE_COLORS["text"],
+        title_font_color=EXECUTIVE_COLORS["primary"],
+        tickfont={"color": EXECUTIVE_COLORS["muted"]},
+        linecolor=EXECUTIVE_COLORS["grid"],
     )
 
 
